@@ -38,7 +38,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ws_examples.cpp">
+    <ClCompile Include="wss_examples.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

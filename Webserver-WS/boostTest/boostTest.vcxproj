@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\openssl-1.0.1\include;..\asio\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openssl-1.0.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openssl-1.0.1\include;..\asio\include;C:\Users\Mansion\Library\openssl-1.0.1t\include;C:\Users\Mansion\Library\openssl-1.0.1t\inc32;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openssl-1.0.1\lib;C:\Users\Mansion\Library\openssl-1.0.1t\out32dll;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -164,7 +164,7 @@
     <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ws_examples.cpp" />
+    <ClCompile Include="wss_examples.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

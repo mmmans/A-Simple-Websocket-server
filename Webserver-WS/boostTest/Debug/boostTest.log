@@ -1,8 +1,2 @@
-﻿  ws_examples.cpp
-c:\users\menx\workspace\projects\boosttest-ws\boosttest\crypto.hpp(113): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
-c:\users\menx\workspace\projects\boosttest-ws\boosttest\crypto.hpp(142): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
-c:\users\menx\workspace\projects\boosttest-ws\boosttest\crypto.hpp(171): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
-c:\users\menx\workspace\projects\boosttest-ws\boosttest\crypto.hpp(200): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
-     Creating library C:\Users\menx\workspace\projects\boostTest-WS\Debug\boostTest.lib and object C:\Users\menx\workspace\projects\boostTest-WS\Debug\boostTest.exp
-  boostTest.vcxproj -> C:\Users\menx\workspace\projects\boostTest-WS\Debug\boostTest.exe
-  boostTest.vcxproj -> C:\Users\menx\workspace\projects\boostTest-WS\Debug\boostTest.pdb (Full PDB)
+﻿  boostTest.vcxproj -> D:\Mansion_work\ws\A-Simple-Websocket-server\Webserver-WS\Debug\boostTest.exe
+  boostTest.vcxproj -> D:\Mansion_work\ws\A-Simple-Websocket-server\Webserver-WS\Debug\boostTest.pdb (Full PDB)
