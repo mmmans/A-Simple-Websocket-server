@@ -8,7 +8,7 @@
 #include <sstream>
 #include <thread>
 #include <unordered_set>
-
+#include <asio/impl/src.hpp>
 #include <asio.hpp>
 namespace SimpleWeb {
   using error_code = std::error_code;
@@ -67,10 +67,10 @@ namespace SimpleWeb {
 
       /// Use this function if you need to recursively send parts of a longer message
       void send(const std::function<void(const error_code &)> &callback = nullptr) noexcept {
-        session->connection->set_timeout(timeout_content);
+        //session->connection->set_timeout(timeout_content);
         auto self = this->shared_from_this(); // Keep Response instance alive through the following async_write
         asio::async_write(*session->connection->socket, streambuf, [self, callback](const error_code &ec, size_t /*bytes_transferred*/) {
-          self->session->connection->cancel_timeout();
+          //self->session->connection->cancel_timeout();
           auto lock = self->session->connection->handler_runner->continue_lock();
           if(!lock)
             return;
@@ -195,7 +195,7 @@ namespace SimpleWeb {
       std::unique_ptr<socket_type> socket; // Socket must be unique_ptr since asio::ssl::stream<asio::ip::tcp::socket> is not movable
       std::mutex socket_close_mutex;
 
-      std::unique_ptr<asio::deadline_timer> timer;
+      //std::unique_ptr<asio::deadline_timer> timer;
 
       void close() noexcept {
         error_code ec;
@@ -203,28 +203,29 @@ namespace SimpleWeb {
         socket->lowest_layer().shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         socket->lowest_layer().close(ec);
       }
-
+	  /*
       void set_timeout(long seconds) noexcept {
         if(seconds == 0) {
           timer = nullptr;
           return;
         }
-
+	*/
+	  /*
         timer = std::unique_ptr<asio::deadline_timer>(new asio::deadline_timer(socket->get_io_service()));
         timer->expires_from_now(boost::posix_time::seconds(seconds));
         auto self = this->shared_from_this();
         timer->async_wait([self](const error_code &ec) {
           if(!ec)
             self->close();
-        });
-      }
-
+        });*/
+     // }
+      /*
       void cancel_timeout() noexcept {
         if(timer) {
           error_code ec;
-          timer->cancel(ec);
+          //timer->cancel(ec);
         }
-      }
+      }*/
     };
 
     class Session {
@@ -395,9 +396,9 @@ namespace SimpleWeb {
     }
 
     void read_request_and_content(const std::shared_ptr<Session> &session) {
-      session->connection->set_timeout(config.timeout_request);
+      //session->connection->set_timeout(config.timeout_request);
       asio::async_read_until(*session->connection->socket, session->request->streambuf, "\r\n\r\n", [this, session](const error_code &ec, size_t bytes_transferred) {
-        session->connection->cancel_timeout();
+        //session->connection->cancel_timeout();
         auto lock = session->connection->handler_runner->continue_lock();
         if(!lock)
           return;
@@ -428,9 +429,9 @@ namespace SimpleWeb {
               return;
             }
             if(content_length > num_additional_bytes) {
-              session->connection->set_timeout(config.timeout_content);
+             // session->connection->set_timeout(config.timeout_content);
               asio::async_read(*session->connection->socket, session->request->streambuf, asio::transfer_exactly(content_length - num_additional_bytes), [this, session](const error_code &ec, size_t /*bytes_transferred*/) {
-                session->connection->cancel_timeout();
+                //session->connection->cancel_timeout();
                 auto lock = session->connection->handler_runner->continue_lock();
                 if(!lock)
                   return;
@@ -487,7 +488,7 @@ namespace SimpleWeb {
 
     void write_response(const std::shared_ptr<Session> &session,
                         std::function<void(std::shared_ptr<typename ServerBase<socket_type>::Response>, std::shared_ptr<typename ServerBase<socket_type>::Request>)> &resource_function) {
-      session->connection->set_timeout(config.timeout_content);
+      //session->connection->set_timeout(config.timeout_content);
       auto response = std::shared_ptr<Response>(new Response(session, config.timeout_content), [this](Response *response_ptr) {
         auto response = std::shared_ptr<Response>(response_ptr);
         response->send([this, response](const error_code &ec) {
