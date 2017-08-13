@@ -158,13 +158,14 @@
   <ItemGroup>
     <ClInclude Include="crypto.hpp" />
     <ClInclude Include="server_http.hpp" />
+    <ClInclude Include="server_https.hpp" />
     <ClInclude Include="server_ws.hpp" />
     <ClInclude Include="server_wss.hpp" />
     <ClInclude Include="status_code.hpp" />
     <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wss_examples.cpp" />
+    <ClCompile Include="https_examples.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

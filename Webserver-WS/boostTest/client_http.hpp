@@ -106,7 +106,7 @@ namespace SimpleWeb {
       bool in_use = false;
       bool attempt_reconnect = true;
 
-      std::unique_ptr<asio::deadline_timer> timer;
+     // std::unique_ptr<asio::deadline_timer> timer;
 
       void set_timeout(long seconds = 0) noexcept {
         if(seconds == 0)
@@ -125,13 +125,13 @@ namespace SimpleWeb {
           }
         });
       }
-
+	  /*
       void cancel_timeout() noexcept {
         if(timer) {
           error_code ec;
           timer->cancel(ec);
         }
-      }
+      }*/
     };
 
     class Session {

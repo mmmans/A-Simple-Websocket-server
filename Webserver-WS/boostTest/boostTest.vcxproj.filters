@@ -36,9 +36,12 @@
     <ClInclude Include="utility.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="server_https.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="wss_examples.cpp">
+    <ClCompile Include="https_examples.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
