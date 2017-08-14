@@ -6,10 +6,10 @@
 <script type="text/javascript" src="jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
 		$(document).ready(function() {
-			if (!window.WebSocket){
+			if (！window.WebSocket){
     			console.log("This browser does not support WebSocket.");
 			}
-			var addr = "wss://"+location.hostname+":8001/echo";
+			var addr = "wss://"+localhost.hostname+":8001/echo";
 			var conn = new WebSocket(addr);
 			conn.onopen = function(evt) { alert('Conn opened');}
 			conn.onmessage = function(evt) { alert('Read: ' + evt.data);}
