@@ -16,11 +16,6 @@ namespace SimpleWeb {
   namespace make_error_code = std;
 } // namespace SimpleWeb
 
-#include <regex>
-namespace SimpleWeb {
-  namespace regex = std;
-}
-
 namespace SimpleWeb {
   template <class socket_type>
   class Server;
@@ -167,7 +162,6 @@ namespace SimpleWeb {
 
       CaseInsensitiveMultimap header;
 
-      regex::smatch path_match;
 
       std::string remote_endpoint_address;
       unsigned short remote_endpoint_port;
@@ -195,37 +189,12 @@ namespace SimpleWeb {
       std::unique_ptr<socket_type> socket; // Socket must be unique_ptr since asio::ssl::stream<asio::ip::tcp::socket> is not movable
       std::mutex socket_close_mutex;
 
-      //std::unique_ptr<asio::deadline_timer> timer;
-
       void close() noexcept {
         error_code ec;
         std::unique_lock<std::mutex> lock(socket_close_mutex); // The following operations seems to be needed to run sequentially
         socket->lowest_layer().shutdown(asio::ip::tcp::socket::shutdown_both, ec);
         socket->lowest_layer().close(ec);
       }
-	  /*
-      void set_timeout(long seconds) noexcept {
-        if(seconds == 0) {
-          timer = nullptr;
-          return;
-        }
-	*/
-	  /*
-        timer = std::unique_ptr<asio::deadline_timer>(new asio::deadline_timer(socket->get_io_service()));
-        timer->expires_from_now(boost::posix_time::seconds(seconds));
-        auto self = this->shared_from_this();
-        timer->async_wait([self](const error_code &ec) {
-          if(!ec)
-            self->close();
-        });*/
-     // }
-      /*
-      void cancel_timeout() noexcept {
-        if(timer) {
-          error_code ec;
-          //timer->cancel(ec);
-        }
-      }*/
     };
 
     class Session {
@@ -269,21 +238,9 @@ namespace SimpleWeb {
     /// Set before calling start().
     Config config;
 
-  private:
-    class regex_orderable : public regex::regex {
-      std::string str;
-
-    public:
-      regex_orderable(const char *regex_cstr) : regex::regex(regex_cstr), str(regex_cstr) {}
-      regex_orderable(std::string regex_str) : regex::regex(regex_str), str(std::move(regex_str)) {}
-      bool operator<(const regex_orderable &rhs) const noexcept {
-        return str < rhs.str;
-      }
-    };
-
   public:
     /// Warning: do not add or remove resources after start() is called
-    std::map<regex_orderable, std::map<std::string, std::function<void(std::shared_ptr<typename ServerBase<socket_type>::Response>, std::shared_ptr<typename ServerBase<socket_type>::Request>)>>> resource;
+    //std::map<std::string, std::map<std::string, std::function<void(std::shared_ptr<typename ServerBase<socket_type>::Response>, std::shared_ptr<typename ServerBase<socket_type>::Request>)>>> resource;
 
     std::map<std::string, std::function<void(std::shared_ptr<typename ServerBase<socket_type>::Response>, std::shared_ptr<typename ServerBase<socket_type>::Request>)>> default_resource;
 
@@ -469,18 +426,7 @@ namespace SimpleWeb {
           return;
         }
       }
-      // Find path- and method-match, and call write_response
-      for(auto &regex_method : resource) {
-        auto it = regex_method.second.find(session->request->method);
-        if(it != regex_method.second.end()) {
-          regex::smatch sm_res;
-          if(regex::regex_match(session->request->path, sm_res, regex_method.first)) {
-            session->request->path_match = std::move(sm_res);
-            write_response(session, it->second);
-            return;
-          }
-        }
-      }
+
       auto it = default_resource.find(session->request->method);
       if(it != default_resource.end())
         write_response(session, it->second);

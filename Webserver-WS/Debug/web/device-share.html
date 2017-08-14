@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Home</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+		$(document).ready(function() {
+			if (window.WebSocket){
+    			console.log("This browser supports WebSocket!");
+			} 
+			else {
+    			console.log("This browser does not support WebSocket.");
+			}
+					    var conn = new WebSocket("wss://localhost:8001/echo");
+					    conn.onopen = function(evt) { alert('Conn opened');}
+					    conn.onmessage = function(evt) { alert('Read: ' + evt.data);}
+					    conn.onclose = function(evt) { alert('Conn closed');}
+						setInterval(function(){conn.send('Hello World');},1000);
+					    alert('load page ok');					
+			});
+</script>
+
+	
+</head>	
+<body>
+this ia test
+</body>
+</html>
