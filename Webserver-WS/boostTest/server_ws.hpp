@@ -165,7 +165,7 @@ namespace SimpleWeb {
       /// fin_rsv_opcode: 129=one fragment, text, 130=one fragment, binary, 136=close connection.
       /// See http://tools.ietf.org/html/rfc6455#section-5.2 for more information
       void send(const std::shared_ptr<SendStream> &message_stream, const std::function<void(const error_code &)> &callback = nullptr,
-                unsigned char fin_rsv_opcode = 129) {
+                unsigned char fin_rsv_opcode = 130) {
         //cancel_timeout();
         //set_timeout();
 

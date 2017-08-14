@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="crypto.hpp" />
+    <ClInclude Include="proxy_server.h" />
     <ClInclude Include="server_http.hpp" />
     <ClInclude Include="server_https.hpp" />
     <ClInclude Include="server_ws.hpp" />
@@ -165,7 +166,7 @@
     <ClInclude Include="utility.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="proxy_server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

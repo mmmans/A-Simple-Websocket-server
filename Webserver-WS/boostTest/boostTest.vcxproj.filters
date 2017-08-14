@@ -39,9 +39,12 @@
     <ClInclude Include="server_https.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="proxy_server.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="proxy_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
