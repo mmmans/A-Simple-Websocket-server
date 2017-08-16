@@ -47,5 +47,8 @@
     <ClCompile Include="proxy_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="data_swither.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

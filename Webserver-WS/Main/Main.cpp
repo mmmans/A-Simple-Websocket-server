@@ -2,11 +2,16 @@
 //
 
 #include <proxy_server.h>
-
-
+#include <exception>
 int main()
 {
+	//std::cout << g_videoBuffer.videoFrames[0].data<< std::endl;
+	//std::thread RTAV(data_swither_start);
 	proxy_server_start();
-    return 0;
+	//RTAV.join();
+	return 0;
+	//testhread.join();
+	
+    
 }
 

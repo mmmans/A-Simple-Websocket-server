@@ -2,7 +2,7 @@
 #define SERVER_HTTP_HPP
 #include "utility.hpp"
 #include <condition_variable>
-#include <functional>
+//#include <functional>
 #include <iostream>
 #include <map>
 #include <sstream>

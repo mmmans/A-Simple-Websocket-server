@@ -24,11 +24,13 @@ getRGB = function(rgbaBuffer) {
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////
 var TypeMap = {
-   audio: new Uint8Array([137,0,1,1]),
-   video: new Uint8Array([137,0,1,0]),
+   audio: new Uint16Array([137,1]),
+   video: new Uint16Array([137,0]),
 }
 var sendData = function(){console.log("ignore data before connection");};
 var connection;
+var audiotype = new Uint16Array([137,1]);
+var videotype = new Uint16Array([137,0]);
 var address = "wss://"+location.hostname+":8001/echo";
 connection = new WebSocket(address);
 connection.binaryType = 'arraybuffer';
@@ -56,12 +58,12 @@ var videoParam = {
    };
 
 var onAudioData = function(sample){
-   console.log(new Uint16Array(sample.data)[0]);
-   sendData(sample.data, "audio");
+   console.log("audio send");
+   sendData(audiotype.concat(sample.data));
 };
 var onVideoData = function(sample){
-   console.log(new Uint16Array(sample.data)[0]);
-   sendData(getRGB(sample.data), "video");
+   console.log("video send");
+   sendData("video"+getRGB(sample.data), );
    sample.others.callback(sample.others.callbackParam);
 };
 audioCapture.init(audioParam, syncTimer, onAudioData);

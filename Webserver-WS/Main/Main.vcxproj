@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\menx\workspace\projects\ws\Webserver-WS\boostTest;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\menx\workspace\projects\ws\Webserver-WS\boostTest;C:\Users\menx\workspace\projects\ws\Webserver-WS\DataSwitcher;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\menx\workspace\projects\ws\Webserver-WS\Debug;C:\openssl-1.0.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

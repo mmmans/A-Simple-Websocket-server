@@ -1,12 +1,13 @@
 #include "server_https.hpp"
 #include "server_wss.hpp"
 #include "utility.hpp"
+
 // Added for the default_resource example
 #include "crypto.hpp"
 #include <algorithm>
 #include <fstream>
 #include <vector>
-
+#include "proxy_server.h"
 using namespace std;
 typedef SimpleWeb::SocketServer<SimpleWeb::WSS> WssServer;
 typedef SimpleWeb::Server<SimpleWeb::HTTPS> HttpsServer;
@@ -91,8 +92,33 @@ int proxy_server_start() {
 
   echo.on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
 
-	  auto message_str = message->string();
+	  string message_str = message->string();
 	  cout << "Server: Message received: \"" << message_str << "\" from " << connection.get() << endl;
+	  //determine the next packet's data from camera or microphone
+	  if (message_str.length() == 4) {
+		  if (message_str[0] != 137) {
+			  cout << " receive a broken packet" << endl;
+			  return;
+		  }
+		  if (message_str[3] == 1) {
+			  packet_type = AUDIO_PACKET;
+		  }
+		  else {
+			  packet_type = VIDEO_PACKET;
+		  }
+		  return;
+	  }
+	  //the next packet comes, save it 
+	  if (packet_type == AUDIO_PACKET) {
+		  //save it 
+		  packet_type = NULL;
+
+	  }
+	  if (packet_type == VIDEO_PACKET) {
+		  //save it 
+		  packet_type = NULL;
+	  }
+	  
 	  /*
 	  auto send_stream = make_shared<WssServer::SendStream>();
 	  *send_stream << message_str;
