@@ -17,8 +17,7 @@ class FileServer {
 public:
 	static void read_and_send(const shared_ptr<HttpsServer::Response> &response, const shared_ptr<ifstream> &ifs) {
 		// Read and send 128 KB at a time
-		cout << "come to read" << endl;
-		static vector<char> buffer(131072); // Safe when server is running on one thread
+		static vector<char> buffer(15000); // Safe when server is running on one thread
 		streamsize read_length;
 		if ((read_length = ifs->read(&buffer[0], static_cast<streamsize>(buffer.size())).gcount()) > 0) {
 			response->write(&buffer[0], read_length);
@@ -29,10 +28,7 @@ public:
 					else
 						cerr << "Connection interrupted" << endl;
 				});
-				cout << "send it" << endl;
 			}
-			else
-				cout << "not send" << endl;
 		}
 	}
 };
@@ -93,43 +89,46 @@ int proxy_server_start() {
   echo.on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
 
 	  string message_str = message->string();
-	  cout << "Server: Message received: \"" << message_str << "\" from " << connection.get() << endl;
+	  cout << "message.length()" << message_str.length()<<endl;
+	  cout << "Server: Message received: " << message_str.substr(0,10);
 	  //determine the next packet's data from camera or microphone
-	  if (message_str.length() == 4) {
-		  if (message_str[0] != 137) {
-			  cout << " receive a broken packet" << endl;
+	  if (message_str[0] != 127) {
+			  cout << "  broken packet" << endl;
 			  return;
-		  }
-		  if (message_str[3] == 1) {
-			  packet_type = AUDIO_PACKET;
-		  }
-		  else {
-			  packet_type = VIDEO_PACKET;
-		  }
-		  return;
 	  }
-	  //the next packet comes, save it 
-	  if (packet_type == AUDIO_PACKET) {
-		  //save it 
-		  packet_type = NULL;
-
+	  if (message_str[1] == 1) {
+			  cout << "from audio" << endl;
+			  AudioFrame* aframe = &(g_audioBuffer.audioFrames[g_audioBuffer.nextWriteIndex]);
+			  //cout << "test here1" << endl;
+			  message_str = message_str.substr(2);
+			  //cout << "test here2" << endl;
+			  cout << message_str.length() << endl;
+			  //char mytest[] = { 'a','b','c' };
+			  //memcpy(aframe->data, message_str.c_str(), message_str.length());
+			  //cout << "test here3" << endl;
+			  aframe->dwsize = message_str.length();
+			  //cout << "test here4" << endl;
+			  g_audioBuffer.nextWriteIndex = GetNextIndex(g_audioBuffer.nextWriteIndex, 3);
+			  return;
 	  }
-	  if (packet_type == VIDEO_PACKET) {
-		  //save it 
-		  packet_type = NULL;
+	  else if(message_str[1] == 0){
+			  cout << "from video" << endl;
+			  VideoFrame* aframe = &(g_videoBuffer.videoFrames[g_videoBuffer.nextWriteIndex]);
+			  //cout << "test here6" << endl;
+			  message_str = message_str.substr(2);
+			  //cout << "test here7" << endl;
+			  cout << message_str.length() << endl;
+			  //char mytest[] = {'a','b','c'};
+			  //memcpy(aframe->data, message_str.c_str(),message_str.length());
+			  //cout << "test here8" << endl;
+			  aframe->dwsize = message_str.length();
+			  //cout << "test here9" << endl;
+			  g_videoBuffer.nextWriteIndex = GetNextIndex(g_videoBuffer.nextWriteIndex, 3);	
+			  return;
 	  }
-	  
-	  /*
-	  auto send_stream = make_shared<WssServer::SendStream>();
-	  *send_stream << message_str;
-	  // connection->send is an asynchronous function
-	  connection->send(send_stream, [](const SimpleWeb::error_code &ec) {
-		  if (ec) {
-			  cout << "Server: Error sending message. " <<
-				  // See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
-				  "Error: " << ec << ", error message: " << ec.message() << endl;
-		  }
-	  });*/
+	  else {
+		  cout << "broken packet" << endl;
+	  }
   };
 
   echo.on_open = [](shared_ptr<WssServer::Connection> connection) {

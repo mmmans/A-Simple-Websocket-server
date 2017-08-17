@@ -23,21 +23,14 @@ getRGB = function(rgbaBuffer) {
    return result.buffer;
 };
 ///////////////////////////////////////////////////////////////////////////////////////////////
-var TypeMap = {
-   audio: new Uint16Array([137,1]),
-   video: new Uint16Array([137,0]),
-}
 var sendData = function(){console.log("ignore data before connection");};
 var connection;
-var audiotype = new Uint16Array([137,1]);
-var videotype = new Uint16Array([137,0]);
 var address = "wss://"+location.hostname+":8001/echo";
 connection = new WebSocket(address);
 connection.binaryType = 'arraybuffer';
 connection.onopen = function(){
    console.log("connected to media broker");
-   sendData = function(data, type) {
-      connection.send(TypeMap[type]);
+   sendData = function(data) {
       connection.send(data);
    };
 };
@@ -59,11 +52,28 @@ var videoParam = {
 
 var onAudioData = function(sample){
    console.log("audio send");
-   sendData(audiotype.concat(sample.data));
+   console.log(sample.data.byteLength);
+   var source = new Uint8Array(sample.data);
+   var rawData = new Uint8Array(sample.data.byteLength+2);
+   rawData[0] = 127;
+   rawData[1] = 1;
+   for(var i = 0; i < sample.data.byteLength; ++i)
+      rawData [i+2] = source[i];
+   //sendData(rawData.buffer);
 };
+var first = 0 ;
 var onVideoData = function(sample){
+   if(first > 10) return;
+   first++;
    console.log("video send");
-   sendData("video"+getRGB(sample.data), );
+   console.log(sample.data.byteLength);
+   var source = new Uint8Array(getRGB(sample.data));
+   var rawData = new Uint8Array(sample.data.byteLength+2);
+   rawData[0] = 127;
+   rawData[1] = 0;
+   for(var i = 0; i < sample.data.byteLength; ++i)
+      rawData [i+2] = source[i];
+   sendData(rawData.buffer);
    sample.others.callback(sample.others.callbackParam);
 };
 audioCapture.init(audioParam, syncTimer, onAudioData);

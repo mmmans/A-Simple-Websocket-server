@@ -6,7 +6,7 @@
 int main()
 {
 	//std::cout << g_videoBuffer.videoFrames[0].data<< std::endl;
-	//std::thread RTAV(data_swither_start);
+	std::thread RTAV(data_swither_start);
 	proxy_server_start();
 	//RTAV.join();
 	return 0;

@@ -7,15 +7,12 @@
 #include <WS2tcpip.h>
 #include <process.h>
 #include <thread>
+#include <cstring>
 #pragma comment(lib,"Ws2_32.lib")
 #define RTAV_VIDEO_PORT 10001
 #define RTAV_AUDIO_PORT 10002
 #define WEB_VIDEO_PORT  11002
 #define WEB_AUDIO_PORT  11001
-#define AUDIO_PACKET    100
-#define VIDEO_PACKET    101
-
-extern  int packet_type;
 
 typedef struct {
 	unsigned long dwsize;

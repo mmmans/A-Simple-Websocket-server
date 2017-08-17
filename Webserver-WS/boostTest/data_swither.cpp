@@ -5,10 +5,8 @@
 AudioBuffer g_audioBuffer;
 VideoBuffer g_videoBuffer;
 
-int packet_type = NULL;
-
-extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE = 1024 * 768 * 4;
-extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE = 8000 * 2 * 2 * 10; // 8K HZ, double channel
+extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE = pow(2,32);
+extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE = pow(2,32); // 8K HZ, double channel
 // Get Next index
 int GetNextIndex(int CurrentIndex, int moder)
 {

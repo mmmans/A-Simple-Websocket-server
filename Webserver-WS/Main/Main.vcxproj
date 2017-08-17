@@ -94,7 +94,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>boostTest.lib;ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ssleay32.lib;libeay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\openssl-1.0.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
