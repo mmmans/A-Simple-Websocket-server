@@ -17,7 +17,7 @@ class FileServer {
 public:
 	static void read_and_send(const shared_ptr<HttpsServer::Response> &response, const shared_ptr<ifstream> &ifs) {
 		// Read and send 128 KB at a time
-		static vector<char> buffer(15000); // Safe when server is running on one thread
+		static vector<char> buffer(131072); // Safe when server is running on one thread
 		streamsize read_length;
 		if ((read_length = ifs->read(&buffer[0], static_cast<streamsize>(buffer.size())).gcount()) > 0) {
 			response->write(&buffer[0], read_length);

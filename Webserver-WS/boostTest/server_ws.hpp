@@ -1,4 +1,4 @@
-#ifndef SERVER_WS_HPP
+﻿#ifndef SERVER_WS_HPP
 #define SERVER_WS_HPP
 #include "crypto.hpp"
 #include "utility.hpp"
@@ -291,6 +291,7 @@ namespace SimpleWeb {
     /// Set before calling start().
     Config config;
 
+	std::shared_ptr<Message> big_res;
   private:
     class regex_orderable : public regex::regex {
       std::string str;
@@ -413,7 +414,7 @@ namespace SimpleWeb {
 
     std::shared_ptr<ScopeRunner> handler_runner;
 
-    SocketServerBase(unsigned short port) noexcept : config(port), handler_runner(new ScopeRunner()) {}
+    SocketServerBase(unsigned short port) noexcept : config(port), handler_runner(new ScopeRunner()),big_res(new Message()) {}
 
     virtual void accept() = 0;
 
@@ -552,21 +553,32 @@ namespace SimpleWeb {
           return;
         if(!ec) {
           std::istream raw_message_data(&connection->read_buffer);
-
+		  std::shared_ptr<Message> message(new Message());
           // Read mask
           std::vector<unsigned char> mask;
           mask.resize(4);
           raw_message_data.read((char *)&mask[0], 4);
+		  if ((fin_rsv_opcode & 0x80) == 0) {
 
-          std::shared_ptr<Message> message(new Message());
-          message->length = length;
-          message->fin_rsv_opcode = fin_rsv_opcode;
+			  big_res->length += length;
+			  big_res->fin_rsv_opcode = fin_rsv_opcode;
+			  std::ostream message_data_out_stream(&big_res->streambuf);
 
-          std::ostream message_data_out_stream(&message->streambuf);
-          for(size_t c = 0; c < length; c++) {
-            message_data_out_stream.put(raw_message_data.get() ^ mask[c % 4]);
-          }
+			  for (size_t c = 0; c < length; c++) {
+				  message_data_out_stream.put(raw_message_data.get() ^ mask[c % 4]);
+			  }
+		  }
+		  if ((fin_rsv_opcode & 0x80) == 1) {
 
+				std::shared_ptr<Message> message(new Message());
+				message->length = length;
+				message->fin_rsv_opcode = fin_rsv_opcode;
+				std::ostream message_data_out_stream(&message->streambuf);
+
+				for(size_t c = 0; c < length; c++) {
+					message_data_out_stream.put(raw_message_data.get() ^ mask[c % 4]);
+				}
+		  }
           // If connection close
           if((fin_rsv_opcode & 0x0f) == 8) {
             int status = 0;
@@ -583,20 +595,26 @@ namespace SimpleWeb {
           }
           else {
             // If ping
-            if((fin_rsv_opcode & 0x0f) == 9) {
+				if((fin_rsv_opcode & 0x0f) == 9) {
               // Send pong
               auto empty_send_stream = std::make_shared<SendStream>();
               connection->send(empty_send_stream, nullptr, fin_rsv_opcode + 1);
             }
-            else if(endpoint.on_message) {
-              //connection->cancel_timeout();
-              //connection->set_timeout();
-              endpoint.on_message(connection, message);
-            }
-
-            // Next message
-            read_message(connection, endpoint);
+				else if(endpoint.on_message) {
+					if ((fin_rsv_opcode & 0x80) == 1) {
+						if (big_res->length != 0) {
+							endpoint.on_message(connection, big_res);
+							big_res->length == 0;
+							big_res->ignore(0);
+							
+						}
+						else
+							endpoint.on_message(connection, message);
+					}    
+				}  
           }
+            // Next message
+          read_message(connection, endpoint);
         }
         else
           connection_error(connection, endpoint, ec);
