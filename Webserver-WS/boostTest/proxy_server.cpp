@@ -8,6 +8,7 @@
 #include <fstream>
 #include <vector>
 #include "proxy_server.h"
+
 using namespace std;
 typedef SimpleWeb::SocketServer<SimpleWeb::WSS> WssServer;
 typedef SimpleWeb::Server<SimpleWeb::HTTPS> HttpsServer;
@@ -89,41 +90,32 @@ int proxy_server_start() {
   echo.on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
 
 	  string message_str = message->string();
-	  cout << "message.length()" << message_str.length()<<endl;
-	  cout << "Server: Message received: " << message_str.substr(0,10);
+	  cout << "Server: Message received: " << message_str.length();
 	  //determine the next packet's data from camera or microphone
 	  if (message_str[0] != 127) {
 			  cout << "  broken packet" << endl;
 			  return;
 	  }
 	  if (message_str[1] == 1) {
+
 			  cout << "from audio" << endl;
 			  AudioFrame* aframe = &(g_audioBuffer.audioFrames[g_audioBuffer.nextWriteIndex]);
-			  //cout << "test here1" << endl;
 			  message_str = message_str.substr(2);
-			  //cout << "test here2" << endl;
-			  cout << message_str.length() << endl;
-			  //char mytest[] = { 'a','b','c' };
-			  //memcpy(aframe->data, message_str.c_str(), message_str.length());
-			  //cout << "test here3" << endl;
+			  memcpy(aframe->data, message_str.c_str(), message_str.length());
 			  aframe->dwsize = message_str.length();
-			  //cout << "test here4" << endl;
-			  g_audioBuffer.nextWriteIndex = GetNextIndex(g_audioBuffer.nextWriteIndex, 3);
+			  g_audioBuffer.nextWriteIndex = GetNextIndex(g_audioBuffer.nextWriteIndex, 10);
+
 			  return;
 	  }
 	  else if(message_str[1] == 0){
+
 			  cout << "from video" << endl;
-			  VideoFrame* aframe = &(g_videoBuffer.videoFrames[g_videoBuffer.nextWriteIndex]);
-			  //cout << "test here6" << endl;
+			  VideoFrame* bframe = &(g_videoBuffer.videoFrames[g_videoBuffer.nextWriteIndex]);
 			  message_str = message_str.substr(2);
-			  //cout << "test here7" << endl;
-			  cout << message_str.length() << endl;
-			  //char mytest[] = {'a','b','c'};
-			  //memcpy(aframe->data, message_str.c_str(),message_str.length());
-			  //cout << "test here8" << endl;
-			  aframe->dwsize = message_str.length();
-			  //cout << "test here9" << endl;
+			  memcpy(bframe->data, message_str.c_str(),message_str.length());
+			  bframe->dwsize = message_str.length();
 			  g_videoBuffer.nextWriteIndex = GetNextIndex(g_videoBuffer.nextWriteIndex, 3);	
+
 			  return;
 	  }
 	  else {
@@ -157,9 +149,4 @@ int proxy_server_start() {
 
   return 0;
 }
-/*
-int main() {
-	proxy_server_start();
-	return 0;
-}
-*/
+

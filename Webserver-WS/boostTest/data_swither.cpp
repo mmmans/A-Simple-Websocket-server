@@ -5,8 +5,8 @@
 AudioBuffer g_audioBuffer;
 VideoBuffer g_videoBuffer;
 
-extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE = pow(2,32);
-extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE = pow(2,32); // 8K HZ, double channel
+extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE = 320*240*4;
+extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE = 500; // 8K HZ, double channel
 // Get Next index
 int GetNextIndex(int CurrentIndex, int moder)
 {

@@ -558,8 +558,8 @@ namespace SimpleWeb {
           std::vector<unsigned char> mask;
           mask.resize(4);
           raw_message_data.read((char *)&mask[0], 4);
-		  if ((fin_rsv_opcode & 0x80) == 0) {
-
+		  // if this is a frag packet , that is , this is not the end of the message,save it temporarily,concat to the tail of the last message
+		  if ((fin_rsv_opcode & 0x80) == 0x00) {
 			  big_res->length += length;
 			  big_res->fin_rsv_opcode = fin_rsv_opcode;
 			  std::ostream message_data_out_stream(&big_res->streambuf);
@@ -568,9 +568,8 @@ namespace SimpleWeb {
 				  message_data_out_stream.put(raw_message_data.get() ^ mask[c % 4]);
 			  }
 		  }
-		  if ((fin_rsv_opcode & 0x80) == 1) {
-
-				std::shared_ptr<Message> message(new Message());
+		  // if this is the end of the packet, save it in a message.
+		  if ((fin_rsv_opcode & 0x80) == 0x80) {
 				message->length = length;
 				message->fin_rsv_opcode = fin_rsv_opcode;
 				std::ostream message_data_out_stream(&message->streambuf);
@@ -601,11 +600,17 @@ namespace SimpleWeb {
               connection->send(empty_send_stream, nullptr, fin_rsv_opcode + 1);
             }
 				else if(endpoint.on_message) {
-					if ((fin_rsv_opcode & 0x80) == 1) {
+					if ((fin_rsv_opcode & 0x80) == 0x80) {
 						if (big_res->length != 0) {
+							std::ostream message_data_out_stream(&big_res->streambuf);
+							std::istream raw_message_data(&message->streambuf);
+							for (size_t c = 0; c < message->length; c++) {
+								message_data_out_stream.put(raw_message_data.get() ^ mask[c % 4]);
+							}
+							big_res->length += message->length;
 							endpoint.on_message(connection, big_res);
-							big_res->length == 0;
-							big_res->ignore(0);
+							big_res->ignore(big_res->length);
+							big_res->length = 0;
 							
 						}
 						else
