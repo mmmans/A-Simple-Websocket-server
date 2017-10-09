@@ -53,21 +53,19 @@ var videoParam = {
 var onAudioData = function(sample){
    console.log("audio send");
    var source = new Uint8Array(sample.data);
-   var rawData = new Uint8Array(sample.data.byteLength+2);
-   rawData[0] = 127;
-   rawData[1] = 1;
+   var rawData = new Uint8Array(sample.data.byteLength+1);
+   rawData[0] = 1;
    for(var i = 0; i < sample.data.byteLength; ++i)
-      rawData [i+2] = source[i];
+      rawData [i+1] = source[i];
    sendData(rawData.buffer);
 };
 var onVideoData = function(sample){
    console.log("video send");
    var source = new Uint8Array(getRGB(sample.data));
    var rawData = new Uint8Array(sample.data.byteLength+2);
-   rawData[0] = 127;
-   rawData[1] = 0;
+   rawData[0] = 0;
    for(var i = 0; i < sample.data.byteLength; ++i)
-      rawData [i+2] = source[i];
+      rawData [i+1] = source[i];
    sendData(rawData.buffer);
    sample.others.callback(sample.others.callbackParam);
 };

@@ -38,7 +38,7 @@ int proxy_server_start() {
   // HTTPS-server at port 8080 using 1 thread
   HttpsServer httpsServer("server.crt", "server.key");
   httpsServer.config.port = 8080;
-  // WSS server at port 443 using 1 thread
+  // WSS server at port 8001 using 1 thread
   WssServer wssServer("server.crt", "server.key");
   wssServer.config.port = 8001;
 
@@ -85,18 +85,14 @@ int proxy_server_start() {
   // Test with the following JavaScript:
   //   var wss=new WebSocket("wss://localhost:8080/echo");
 
-  auto &echo = wssServer.endpoint["^/echo/?$"];
+  auto &echo = wssServer.endpoint["^/ws/?$"];
 
   echo.on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
 
 	  string message_str = message->string();
 	  cout << "Server: Message received: " << message_str.length();
 	  //determine the next packet's data from camera or microphone
-	  if (message_str[0] != 127) {
-			  cout << "  broken packet" << endl;
-			  return;
-	  }
-	  if (message_str[1] == 1) {
+	  if (message_str[0] == 1) {
 
 			  cout << "from audio" << endl;
 			  AudioFrame* aframe = &(g_audioBuffer.audioFrames[g_audioBuffer.nextWriteIndex]);
@@ -107,7 +103,7 @@ int proxy_server_start() {
 
 			  return;
 	  }
-	  else if(message_str[1] == 0){
+	  else if(message_str[0] == 0){
 
 			  cout << "from video" << endl;
 			  VideoFrame* bframe = &(g_videoBuffer.videoFrames[g_videoBuffer.nextWriteIndex]);
