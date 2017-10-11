@@ -147,46 +147,41 @@ int RTAVConnectionAudioThread(void)
 	return 0;
 }
 
+
+
+
+
+int SHAREConnectioScreenThread(void)
+{
+	printf("%s(): create socket for screen data transfer, port:%d .\n", __FUNCTION__, SCREEN_PORT);
+	SOCKET sockSrv = CreateAndBind(SCREEN_PORT);
+	std::vector<std::thread> thrpool(5);
+	listen(sockSrv, 5);
+
+	SOCKADDR_IN addrClient;
+	int len = sizeof(SOCKADDR);
+
+	printf("screen data transfer thread is running .....\n");
+
+	while (true)
+	{
+		SOCKET sockConn = accept(sockSrv, (SOCKADDR *)&addrClient, &len);
+		printf("%s(): new view-client screen sharing connection.\n", __FUNCTION__);
+		thrpool.push_back(std::thread([sockConn]() {
+			char buf[3000 * 2000];
+			while (true) {
+				std::cout << "thread created" << std::endl;
+				recv(sockConn, buf, 4, 0);
+				int len = buf[0] + buf[1] * 256 + buf[2] * 256 * 256 + buf[3] * 256 * 256 * 256;
+				std::cout << "revc len: " << len << std::endl;
+				recv(sockConn, buf, len - 4, 0);
+
+			}}));
+	}
+	closesocket(sockSrv);
+	return 0;
+}
 /*
-
-int BrowserConnectionVideoThread(void)
-{
-printf("%s(): create socket for broswer video, port:%d .\n", __FUNCTION__, WEB_VIDEO_PORT);
-SOCKET sockSrv = CreateAndBind(WEB_VIDEO_PORT);
-
-listen(sockSrv, 5);
-
-SOCKADDR_IN addrClient;
-int len = sizeof(SOCKADDR);
-
-printf("Browser video thread is running .....\n");
-
-while (!g_quit)
-{
-SOCKET sockConn = accept(sockSrv, (SOCKADDR *)&addrClient, &len);
-printf("%s(): new broswer video connection.\n", __FUNCTION__);
-char recvchar[100];
-while (!g_quit) {
-// Loop for recieving the video data
-VideoFrame* aframe = &(g_videoBuffer.videoFrames[g_videoBuffer.nextWriteIndex]);
-int recieved = recv(sockConn, aframe->data, DEFAULT_VIDEO_FRAME_SIZE, 0);
-if (recieved > 0) {
-aframe->dwsize = recieved;
-g_videoBuffer.nextWriteIndex = GetNextIndex(g_videoBuffer.nextWriteIndex, 3);
-if (g_videolog) {
-printf("+++ recieved video frame(%d bytes) +++\n", recieved);
-}
-} else {
-break;
-}
-//send(sockConn,sendbuffer,strlen(sendbuffer)+1,0);
-}
-closesocket(sockConn);
-}
-closesocket(sockSrv);
-return 0;
-}
-
 int BrowserConnectionAudioThread(void)
 {
 // Bind port 11002 and recieve audio from web
@@ -230,8 +225,10 @@ int data_swither_start()
 	InitBuffers();
 	std::thread RTAVVideoThread(RTAVConnectionVideoThread);
 	std::thread RTAVAudioThread(RTAVConnectionAudioThread);
+	std::thread SHAREScreenThread(SHAREConnectioScreenThread);
 	RTAVAudioThread.join();
 	RTAVVideoThread.join();
+	SHAREScreenThread.join();
 	return 0;
 }
 

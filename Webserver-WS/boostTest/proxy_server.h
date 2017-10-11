@@ -8,11 +8,12 @@
 #include <process.h>
 #include <thread>
 #include <cstring>
+#include <vector>
 #pragma comment(lib,"Ws2_32.lib")
 #define RTAV_VIDEO_PORT 10001
 #define RTAV_AUDIO_PORT 10002
-#define WEB_VIDEO_PORT  11002
-#define WEB_AUDIO_PORT  11001
+#define SCREEN_PORT  10006
+#define MKS_PORT  10003
 
 typedef struct {
 	unsigned long dwsize;
@@ -49,6 +50,8 @@ extern void InitBuffers();
 extern SOCKET CreateAndBind(int port);
 extern int RTAVConnectionAudioThread(void);
 extern int RTAVConnectionVideoThread(void);
+extern int SHAREConnectioScreenThread(void);
+//extern int SHAREConnectioeventThread(void);
 extern int data_swither_start();
 
 int proxy_server_start();
