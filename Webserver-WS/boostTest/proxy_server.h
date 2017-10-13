@@ -42,6 +42,7 @@ typedef struct {
 extern AudioBuffer g_audioBuffer;
 extern VideoBuffer g_videoBuffer;
 
+
 extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE;
 extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE; // 8K HZ, double channel
 
@@ -54,5 +55,5 @@ extern int SHAREConnectioScreenThread(void);
 //extern int SHAREConnectioeventThread(void);
 extern int data_swither_start();
 
-int proxy_server_start();
+extern int proxy_server_start();
 #endif // !_PROXY_SERVER_H

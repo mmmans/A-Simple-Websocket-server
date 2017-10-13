@@ -1,0 +1,580 @@
+@-webkit-keyframes ngdialog-fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes ngdialog-fadeout {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@-webkit-keyframes ngdialog-fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ngdialog-fadein {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.ngdialog {
+  box-sizing: border-box;
+}
+
+.ngdialog *,
+.ngdialog *:before,
+.ngdialog *:after {
+  box-sizing: inherit;
+}
+
+.ngdialog {
+  position: fixed;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 10000;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.ngdialog.ngdialog-disabled-animation,
+.ngdialog.ngdialog-disabled-animation .ngdialog-overlay,
+.ngdialog.ngdialog-disabled-animation .ngdialog-content {
+  -webkit-animation: none!important;
+  animation: none!important;
+}
+
+.ngdialog-overlay {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.4);
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: ngdialog-fadein 0.5s;
+  animation: ngdialog-fadein 0.5s;
+}
+
+.ngdialog-no-overlay {
+  pointer-events: none;
+}
+
+.ngdialog.ngdialog-closing .ngdialog-overlay {
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: ngdialog-fadeout 0.5s;
+  animation: ngdialog-fadeout 0.5s;
+}
+
+.ngdialog-content {
+  background: white;
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: ngdialog-fadein 0.5s;
+  animation: ngdialog-fadein 0.5s;
+  pointer-events: all;
+}
+
+.ngdialog.ngdialog-closing .ngdialog-content {
+  -webkit-backface-visibility: hidden;
+  -webkit-animation: ngdialog-fadeout 0.5s;
+  animation: ngdialog-fadeout 0.5s;
+}
+
+.ngdialog-close:before {
+  font-family: 'Helvetica', Arial, sans-serif;
+  content: '\D7';
+  cursor: pointer;
+}
+
+html.ngdialog-open,
+body.ngdialog-open {
+  overflow: hidden;
+}.ngdialog .ngdialog-content {
+   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-size: 15px;
+   color: #535353;
+   margin: 0 auto;
+   max-width: 100%;
+   position: relative;
+   border-radius: 2px;
+   box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.2);
+   width: 450px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   -webkit-transform: translate(-50%, -50%);
+   -moz-transform: translate(-50%, -50%);
+}
+
+.ngdialog.settings-window {
+   overflow: inherit;
+}
+
+.dialog-title {
+   width: 100%;
+   color: #363636;
+   font-size: 16px;
+   font-weight: bold;
+   display: inline-block;
+   padding: 20px;
+   border-bottom: 1px solid #e2e2e2;
+   background-color: #eeeeee;
+   border-top-left-radius: 2px;
+   border-top-right-radius: 2px;
+}
+
+.dialog-content {
+   background-color: #ffffff;
+   overflow: auto;
+   padding: 30px 0px;
+   display: block;
+}
+
+.dialog-content a {
+   color: #428bca;
+   text-decoration: none;
+}
+
+.dialog-bold-text {
+   font-weight: bold;
+}
+
+.dialog-button-row {
+   background-color: #ffffff;
+   border-top: 1px solid #e2e2e2;
+   height: 72px;
+   border-bottom-right-radius: 2px;
+   border-bottom-left-radius: 2px;
+   padding: 20px 0px;
+}
+
+.dialog-button-row > button {
+   border: none;
+}
+
+.dialog-button-row > a {
+   text-decoration: none;
+}
+
+.about-dialog-content {
+   padding: 0px 20px;
+   font-size: 12px;
+}
+
+.clipboard-help-dialog-content {
+   padding: 0px 20px;
+   font-size: 14px;
+   white-space: pre-wrap;
+}
+
+.bold-text {
+   font-weight: bold;
+}
+
+.about-dialog-product-name-text {
+   font-size: 16px;
+}
+
+.about-dialog-logo {
+   float: left;
+   padding: 0px;
+   background: url(icons-1/Horizon-Logo.png) top left no-repeat;
+   background-size: 100px 100px;
+   width: 100px;
+   height: 200px;
+   margin: 20px 20px 20px 0px;
+}
+
+.modal-window-overlay {
+   /* A dark translucent div that covers the whole screen */
+   position: absolute;
+   z-index: 9999;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 100%;
+   background-color: #000000;
+   opacity: 0.7;
+}
+
+.modal-window {
+   /* A centered div above the overlay with a box shadow. */
+   z-index: 10000;
+   position: absolute;
+
+   /* Center the dialog */
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   -webkit-transform: translate(-50%, -50%);
+   -moz-transform: translate(-50%, -50%);
+
+   background-color: #fff;
+   border-radius: 2px;
+}
+
+.modal-window-close-button {
+   position: absolute;
+   top: 5px;
+   left: 5px;
+   padding: 0px;
+   background: url(icons-1/icon-close.png) center no-repeat #eee;
+   background-size: 10px 10px;
+   display: inline-block;
+}
+
+.modal-window-title {
+   left: 0px;
+   vertical-align: middle;
+   width: 100%;
+   color: #535353;
+   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-size: 16px;
+   font-weight: bold;
+   text-align: center;
+   display: inline-block;
+   line-height: 30px;
+   padding: 5px 0px;
+}
+
+.modal-title-separator {
+   background-color: #fff;
+   border-bottom: 1px solid #fff;
+   border-top: 1px solid #ccc;
+   margin: 0px 0px;
+   padding: 0px;
+   height: 0px;
+   width: 100%;
+   left: 0px;
+}
+
+.modal-content {
+   top: 40px;
+   width: 100%;
+   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-size: 14px;
+   color: #535353;
+}
+
+.modal-button {
+   float: right;
+   font-size: 13px;
+   color: white;
+   height: 33px;
+   line-height: 33px;
+   width: 135px;
+   border-radius: 4px;
+   display: inline-block;
+   cursor: pointer;
+   text-align: center;
+}
+
+.modal-submit-button {
+   margin: 20px 0px 20px 0px;
+   background-color: #349AD5;
+}
+
+.settings-container {
+   margin: 0px 20px;
+   line-height: 24px;
+}
+
+.settings-container > button {
+   border: none;
+}
+
+.settings-separator {
+   margin: 30px 20px;
+   height: 1px;
+   background-color: #e5e5e5;
+}
+
+.settings-label {
+   font-size: 15px;
+   vertical-align: middle;
+   display: block;
+}
+
+.settings-toggle-container {
+   float: right;
+}
+
+.settings-switch-label {
+   font-size: 12px;
+   font-weight: bold;
+   color: #363636;
+   display: inline-block;
+   height: 32px;
+   vertical-align: middle;
+}
+
+.settings-text {
+   font-size: 12px;
+   font-weight: bold;
+   display: block;
+}
+
+.icon-and-name-container {
+   cursor: pointer;
+   float: left;
+}
+
+.session-ops-window-text {
+   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-size: 15px;
+   color: #363636;
+   margin: 0px 20px;
+   word-wrap: break-word;
+   white-space: pre-wrap;
+}
+
+.session-ops-window-text.warning {
+   font-size: 12px;
+   font-weight: bold;
+   margin-top: 0px;
+   width: 370px;
+}
+
+.modal-button-base.disable {
+   opacity: .5 !important;
+   cursor: default !important;
+}
+
+.modal-button-base {
+   font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+   font-size: 14px;
+   font-weight: bold;
+   color: white !important;
+   height: 32px;
+   padding: 0px 32px;
+   line-height: 32px;
+   border-radius: 2px;
+   display: inline-block;
+   cursor: pointer;
+   text-align: center;
+}
+
+.modal-button-base:visited {
+   color: white !important;
+}
+
+.modal-button-left {
+   float: left;
+}
+
+.modal-button-right {
+   float: right;
+   margin-right: 20px;
+}
+
+.modal-button-base.disable {
+   opacity: .5 !important;
+   cursor: default !important;
+}
+
+.modal-button-blue {
+   background-color: #249bd5;
+}
+
+.modal-button-blue:hover {
+   background-color: #3da9de;
+}
+
+.modal-button-grey {
+   background-color: #696a6f;
+   margin-right: 10px;
+}
+
+.modal-button-grey:hover {
+   background-color: #7a7b80;
+}
+
+.modal-button-reset {
+   margin-top: 0px;
+   margin-left: 20px;
+   float: right;
+}
+
+.modal-button-reset.disable:hover {
+   background-color: #249bd5;
+}
+
+.modal-button-add-display {
+   margin: 0 auto;
+   height: 50px;
+   text-align: center;
+   display: table;
+   line-height: 50px;
+   margin-top: 20px;
+   margin-bottom: 5px;
+}
+
+.modal-button-add-display.disable:hover {
+   background-color: #249bd5;
+}
+
+.toggle-opt {
+   display: inline-block;
+   height: 24px;
+}
+
+.tgl, .tgl:after, .tgl:before, .tgl *, .tgl *:after, .tgl *:before, .tgl + .tgl-btn {
+   box-sizing: border-box;
+}
+
+.tgl::-moz-selection, .tgl:after::-moz-selection, .tgl:before::-moz-selection, .tgl *::-moz-selection, .tgl *:after::-moz-selection, .tgl *:before::-moz-selection, .tgl + .tgl-btn::-moz-selection {
+   background: none;
+}
+
+.tgl::selection, .tgl:after::selection, .tgl:before::selection, .tgl *::selection, .tgl *:after::selection, .tgl *:before::selection, .tgl + .tgl-btn::selection {
+   background: none;
+}
+
+.tgl + .tgl-btn {
+   outline: 0;
+   display: inline-block;
+   width: 48px;
+   height: 24px;
+   position: relative;
+   cursor: pointer;
+}
+
+.tgl + .tgl-btn:after, .tgl + .tgl-btn:before {
+   position: relative;
+   display: inline-block;
+   content: "";
+   width: 50%;
+   height: 100%;
+}
+
+.tgl + .tgl-btn:after {
+   left: 0;
+}
+
+.tgl + .tgl-btn:before {
+   display: none;
+}
+
+.tgl:checked + .tgl-btn:after {
+   left: 50%;
+}
+
+.tgl-light + .tgl-btn {
+   background: #696a6f;
+   border-radius: 2em;
+   padding: 2px;
+   -webkit-transition: all .4s ease;
+   transition: all .4s ease;
+}
+
+.tgl-light + .tgl-btn:after {
+   border-radius: 50%;
+   background: #fff;
+   -webkit-transition: all .2s ease;
+   transition: all .2s ease;
+}
+
+.tgl-light:checked + .tgl-btn {
+   background: #9bbf3b;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (   min--moz-device-pixel-ratio: 2), only screen and (     -o-min-device-pixel-ratio: 2/1), only screen and (        min-device-pixel-ratio: 2), only screen and (                min-resolution: 192dpi), only screen and (                min-resolution: 2dppx) {
+
+   .modal-window-close-button {
+      background: url(icons-1/icon-close2x.png) center no-repeat #eee;
+      background-size: 10px 10px;
+   }
+
+   .about-dialog-logo {
+      background: url(icons-1/Horizon-Logo2x.png) top left no-repeat;
+      background-size: 100px 100px;
+   }
+}
+body {
+   overflow: hidden;
+}
+
+.ng-scope {
+   position: absolute;
+   left: 0;
+   top: 0;
+   width: 100%;
+   height: 100%;
+}
+
+.canvas_css {
+   display: block;
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 1;
+}
+
+.icon-button {
+   width: 50px;
+   height: 50px;
+   border-radius: 4px;
+   cursor: pointer;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   margin-left: -25px;
+   margin-top: -25px;
+}
+
+.icon-select {
+   background: url(icons-1/select_monitor.png) center no-repeat;
+   background-size: 50px 50px;
+}
+
+.background-display {
+   width: 100%;
+   height: 100%;
+   background-color: #c3c3c3;
+}
+
+.suggest-text {
+   font-family: "Open Sans", Helvetica, Arial, sans-serif;
+   font-size: 16px;
+   position: absolute;
+   width: 280px;
+   height: 50px;
+   margin-left: -140px;
+   margin-top: -25px;
+   text-align: center;
+   white-space: pre-line;
+}
+
+.central {
+   left: 50%;
+   top: 50%;
+}
+
+.top-area {
+   left: 50%;
+   top: 25%;
+}
+/*# sourceMappingURL=style.extended-monitor.cc050c0b31e6616b259f.css.map*/

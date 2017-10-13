@@ -1,3 +1,4 @@
+#include "proxy_server.h"
 #include "server_https.hpp"
 #include "server_wss.hpp"
 #include "utility.hpp"
@@ -7,12 +8,12 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
-#include "proxy_server.h"
+
 
 using namespace std;
 typedef SimpleWeb::SocketServer<SimpleWeb::WSS> WssServer;
 typedef SimpleWeb::Server<SimpleWeb::HTTPS> HttpsServer;
-
+WssServer::Endpoint *echo;
 // define this class to send files to client more convenient
 class FileServer {
 public:
@@ -40,15 +41,16 @@ int proxy_server_start() {
   httpsServer.config.port = 8080;
   // WSS server at port 8001 using 1 thread
   WssServer wssServer("server.crt", "server.key");
-  wssServer.config.port = 8001;
+  wssServer.config.port = 8057;
 
   // deal with the http get method
   httpsServer.default_resource["GET"] = [](shared_ptr<HttpsServer::Response> response, shared_ptr<HttpsServer::Request> request) {
     try {
 		  string path = request->path;
 		  if (path == "/")
-			  path = path+ "device-share.html";
-		  path = "web/" + path;
+			  path = path+ "main.html";
+		  path = "web" + path;
+		  cout << path << endl;
           SimpleWeb::CaseInsensitiveMultimap header;
 
 		  auto ifs = make_shared<ifstream>();
@@ -85,9 +87,9 @@ int proxy_server_start() {
   // Test with the following JavaScript:
   //   var wss=new WebSocket("wss://localhost:8080/echo");
 
-  auto &echo = wssServer.endpoint["^/ws/?$"];
+  echo = &wssServer.endpoint[".*"];
 
-  echo.on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
+  echo->on_message = [](shared_ptr<WssServer::Connection> connection, shared_ptr<WssServer::Message> message) {
 
 	  string message_str = message->string();
 	  cout << "Server: Message received: " << message_str.length();
@@ -119,17 +121,23 @@ int proxy_server_start() {
 	  }
   };
 
-  echo.on_open = [](shared_ptr<WssServer::Connection> connection) {
+  echo->on_open = [&wssServer](shared_ptr<WssServer::Connection> connection) {
 	  cout << "Server: Opened connection " << connection.get() << endl;
+	  //auto &echo = wssServer.endpoint[".*"];
+	 // auto send_stream = make_shared<WssServer::SendStream>();
+	  //*send_stream << "one comes";
+	 // for( auto &c : echo.get_connections())
+		 //c->send(send_stream);
+
   };
 
   // See RFC 6455 7.4.1. for status codes
-  echo.on_close = [](shared_ptr<WssServer::Connection> connection, int status, const string & /*reason*/) {
+  echo->on_close = [](shared_ptr<WssServer::Connection> connection, int status, const string & /*reason*/) {
 	  cout << "Server: Closed connection " << connection.get() << " with status code " << status << endl;
   };
 
   // See http://www.boost.org/doc/libs/1_55_0/doc/html/boost_asio/reference.html, Error Codes for error code meanings
-  echo.on_error = [](shared_ptr<WssServer::Connection> connection, const SimpleWeb::error_code &ec) {
+  echo->on_error = [](shared_ptr<WssServer::Connection> connection, const SimpleWeb::error_code &ec) {
 	  cout << "Server: Error in connection " << connection.get() << ". "
 		  << "Error: " << ec << ", error message: " << ec.message() << endl;
   };
@@ -139,10 +147,43 @@ int proxy_server_start() {
 	  // Start WSS-server
 	  wssServer.start();
   });
-
+  thread dupimg_thread(SHAREConnectioScreenThread);
   httpsServer_thread.join();
   wssServer_thread.join();
+  dupimg_thread.join();
 
   return 0;
 }
 
+
+
+int SHAREConnectioScreenThread(void)
+{
+	printf("%s(): create socket for screen data transfer, port:%d .\n", __FUNCTION__, SCREEN_PORT);
+	SOCKET sockSrv = CreateAndBind(SCREEN_PORT);
+	std::vector<std::thread> thrpool(5);
+	listen(sockSrv, 5);
+
+	SOCKADDR_IN addrClient;
+	int len = sizeof(SOCKADDR);
+	SOCKET sockConn = accept(sockSrv, (SOCKADDR *)&addrClient, &len);
+	printf("viewclient connected .....\n");
+	SOCKADDR_IN* tmp = (SOCKADDR_IN*)&addrClient;
+	// print the ip and port of the viewclient
+	//printf("hhh:%s\n", inet_ntoa(tmp->sin_addr));
+	//printf("hhh:%d\n", tmp->sin_port);
+	while (true){
+			char* buf = new char[2840 * 2550 * 4];
+			auto send_stream = make_shared<WssServer::SendStream>();
+			fstream fs("1.data");
+			
+			fs.read(buf,4202496);
+			for (int i = 0; i < 4202496; ++i)
+				*send_stream << buf[i];
+			for (auto &c : echo->get_connections())
+				c->send(send_stream);
+			while (true);
+	}
+	closesocket(sockSrv);
+	return 0;
+}

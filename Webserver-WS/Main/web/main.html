@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<head>
+<title> send image</title>
+<script type="text/javascript" src = "./collaborate.js"></script> 
+<script type="text/javascript">
+   var setPanelVisible = function(visible){
+      var panel = document.getElementById("choose-panel");
+      if(visible){
+         panel.style.display = '';
+      } else {
+         panel.style.display = 'none';
+      }
+   }
+   var enterRTAV = function(){
+      setPanelVisible(false);
+      self.location="./device-share.html";
+   };
+   var isFullscreen = function() {
+    return !(window.document.fullScreenElement !== undefined && window.document.fullScreenElement === null || window.document.msFullscreenElement !== undefined && window.document.msFullscreenElement === null || window.document.mozFullScreen !== undefined && !window.document.mozFullScreen || window.document.webkitIsFullScreen !== undefined && !window.document.webkitIsFullScreen);
+   };
+   var onFullscreenChanged = function onFullscreenChanged(event) {
+      console.warn("full screen changed");
+      if (isFullscreen()) {
+         console.info("enter full screen");
+      } else {
+         console.info("exit full screen");
+         var iframeObj = document.getElementById("viewportal");
+         iframeObj.src = 'about:blank';
+         iframeObj.style.display= 'none';
+         setPanelVisible(true);
+      }
+   };
+   var setPortrait = function(){
+      hintText = document.getElementById("hint-text");
+      imageHolder = document.getElementById("image-holder");
+      image1 = document.getElementById("image1");
+      image2 = document.getElementById("image2");
+      hintText.style.top="15%";
+      hintText.style['font-size']="35px";
+      imageHolder.style.top="35%";
+      image1.style.width="240px";
+      image1.style.height="240px";
+      image2.style.width="240px";
+      image2.style.height="240px";
+
+   };
+   var setLandscape = function(){
+      hintText = document.getElementById("hint-text");
+      imageHolder = document.getElementById("image-holder");
+      image1 = document.getElementById("image1");
+      image2 = document.getElementById("image2");
+      hintText.style.top="5%";
+      hintText.style['font-size']="20px";
+      imageHolder.style.top="28%";
+      image1.style.width="200px";
+      image1.style.height="200px";
+      image2.style.width="200px";
+      image2.style.height="200px";
+   };
+   var handleOrientation = function(){
+      //text: 15% - 5%
+      //button
+      //35% - 28%
+      //240px - 200px
+      if(screen.orientation.angle === 0 || screen.orientation.angle === 180){
+         setPortrait();
+      } else {
+         setLandscape();
+      }
+   };
+   document.addEventListener('webkitfullscreenchange', onFullscreenChanged);
+   document.addEventListener('mozfullscreenchange', onFullscreenChanged);
+   document.addEventListener('fullscreenchange', onFullscreenChanged);
+   document.addEventListener('MSFullscreenChange', onFullscreenChanged);
+   window.addEventListener("deviceorientation", handleOrientation, true);
+
+   var enterFullscreen= function enterFullscreen(elem) {
+      if (0) {//isFullscreen()
+        return;
+      }
+      if (elem.requestFullScreen) {
+        elem.requestFullScreen();
+      } else if (elem.mozRequestFullScreen) {
+        elem.mozRequestFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen(elem.ALLOW_KEYBOARD_INPUT);
+      } else if (elem.webkitRequestFullScreen) {
+        elem.webkitRequestFullScreen(elem.ALLOW_KEYBOARD_INPUT);
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      } else {
+        console.error("fail to max the screen");
+      }
+   };
+   var enterDisplay = function(){
+      enterFullscreen(document.getElementById("viewportal"));
+      setPanelVisible(false);
+      proxy_start();
+   };
+</script>
+</head>
+<body style="border:0;margin:0;padding:0;left:0;top:0">
+<iframe id="viewportal" style="display:none;border:0;margin:0;left:0;top:0"></iframe>
+<div id="choose-panel" style="text-align: center">
+   <h3 id="hint-text" style="font-size:20px;top:5%;width:100%;position:absolute;display:block;">Choose a function to continue</h3>
+   <div id="image-holder" style="top:35%;width:100%;position:absolute;display:block;">
+      <div style="position:relative">
+         <button onclick="enterRTAV()" style="margin-right:8%;padding:20px;">
+            <img id="image1" style="width:220px;height:220px" src="./webcam.jpg" />
+         </button>
+         <button onclick="enterDisplay()" style="margin-left:8%;padding:20px;">
+            <img id="image2" style="width:220px;height:220px" src=".//share.png" />
+         </button>
+      </div>
+   </div>
+</div>
+</body>
+</html>

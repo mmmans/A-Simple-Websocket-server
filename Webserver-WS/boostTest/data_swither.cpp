@@ -2,6 +2,7 @@
 //
 #include "proxy_server.h"
 
+
 AudioBuffer g_audioBuffer;
 VideoBuffer g_videoBuffer;
 
@@ -150,7 +151,7 @@ int RTAVConnectionAudioThread(void)
 
 
 
-
+/*
 int SHAREConnectioScreenThread(void)
 {
 	printf("%s(): create socket for screen data transfer, port:%d .\n", __FUNCTION__, SCREEN_PORT);
@@ -168,7 +169,7 @@ int SHAREConnectioScreenThread(void)
 		SOCKET sockConn = accept(sockSrv, (SOCKADDR *)&addrClient, &len);
 		printf("%s(): new view-client screen sharing connection.\n", __FUNCTION__);
 		thrpool.push_back(std::thread([sockConn]() {
-			char buf[3000 * 2000];
+			char* buf = new char[2840*2550*4];
 			while (true) {
 				std::cout << "thread created" << std::endl;
 				recv(sockConn, buf, 4, 0);
@@ -180,7 +181,7 @@ int SHAREConnectioScreenThread(void)
 	}
 	closesocket(sockSrv);
 	return 0;
-}
+}*/
 /*
 int BrowserConnectionAudioThread(void)
 {

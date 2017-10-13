@@ -14,7 +14,6 @@ console.log('browser supports HTML5 media in');
 getRGB = function(rgbaBuffer) {
    var data = new Uint8Array(rgbaBuffer),
       result = new Uint8Array(rgbaBuffer.byteLength/4*3);
-
    for (var i =0;i<rgbaBuffer.byteLength/4;i++){
       result[i*3] = data[i*4];
       result[i*3+1] = data[i*4+1];
@@ -25,7 +24,9 @@ getRGB = function(rgbaBuffer) {
 ///////////////////////////////////////////////////////////////////////////////////////////////
 var sendData = function(){console.log("ignore data before connection");};
 var connection;
-var address = "wss://"+location.hostname+":8001/echo";
+//below is for testing
+//var address = "wss://localhost:8057/rtav";//native testing
+var address = "wss://"+location.hostname+":8057/echo";
 connection = new WebSocket(address);
 connection.binaryType = 'arraybuffer';
 connection.onopen = function(){
@@ -51,7 +52,7 @@ var videoParam = {
    };
 
 var onAudioData = function(sample){
-   console.log("audio send");
+   //console.log("audio send");
    var source = new Uint8Array(sample.data);
    var rawData = new Uint8Array(sample.data.byteLength+1);
    rawData[0] = 1;
@@ -60,12 +61,12 @@ var onAudioData = function(sample){
    sendData(rawData.buffer);
 };
 var onVideoData = function(sample){
-   console.log("video send");
+   //console.log("video send");
    var source = new Uint8Array(getRGB(sample.data));
-   var rawData = new Uint8Array(sample.data.byteLength+2);
+   var rawData = new Uint8Array(sample.data.byteLength+1);
    rawData[0] = 0;
-   for(var i = 0; i < sample.data.byteLength; ++i)
-      rawData [i+1] = source[i];
+   for(var i = 1; i < sample.data.byteLength; ++i)
+      rawData [i+2] = source[i];
    sendData(rawData.buffer);
    sample.others.callback(sample.others.callbackParam);
 };

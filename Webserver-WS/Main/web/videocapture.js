@@ -138,7 +138,6 @@
 
       this.video.src = window.URL.createObjectURL(stream);
       this.localStream = stream;
-
       this.sessionID = this.sessionCount;
       this.sessionCount++;
       this.lastValidTime = -1;
@@ -185,7 +184,6 @@
          }
          var imgData,
             timeStamp = this.syncTimer.getTime();
-
          this.updateActiveStatus();
          this.ctx.drawImage(this.video, 0, 0, this.width, this.height);
          imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);

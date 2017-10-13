@@ -1,7 +1,4 @@
-﻿  data_swither.cpp
-  Generating Code...
-  Compiling...
-  proxy_server.cpp
+﻿  proxy_server.cpp
 c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\crypto.hpp(113): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
 c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\crypto.hpp(142): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
 c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\crypto.hpp(171): warning C4244: 'argument': conversion from 'std::streamsize' to 'std::size_t', possible loss of data
@@ -14,5 +11,4 @@ c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\server_http.hpp(383):
 c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\server_http.hpp(469): warning C4101: 'e': unreferenced local variable
   c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\server_http.hpp(436): note: while compiling class template member function 'void SimpleWeb::ServerBase<SimpleWeb::HTTPS>::write_response(const std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Session> &,std::function<void (std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Response>,std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Request>)> &)'
   c:\users\menx\workspace\projects\ws\webserver-ws\boosttest\server_http.hpp(432): note: see reference to function template instantiation 'void SimpleWeb::ServerBase<SimpleWeb::HTTPS>::write_response(const std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Session> &,std::function<void (std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Response>,std::shared_ptr<SimpleWeb::ServerBase<SimpleWeb::HTTPS>::Request>)> &)' being compiled
-  Generating Code...
   boostTest.vcxproj -> C:\Users\menx\workspace\projects\ws\Webserver-WS\Debug\boostTest.lib
