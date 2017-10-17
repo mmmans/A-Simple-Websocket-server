@@ -158,7 +158,7 @@ function proxy_start(){
        // subpage
        console.log("data length from server :")
        console.log(evt.data.byteLength)
-      /* var ushortBuf = new Uint16Array(evt.data);
+       var ushortBuf = new Uint16Array(evt.data);
        var resolutionWidth = ushortBuf[0];
        var resolutionHeight = ushortBuf[1];
        var x = ushortBuf[2];
@@ -166,18 +166,18 @@ function proxy_start(){
        var w = ushortBuf[4];
        var h = ushortBuf[5];
        var widthStep = ushortBuf[6];
-       if(widthStep !== resolutionWidth*4){
+       if(widthStep !== resolutionWidth*3){
           console.error("inner logic error!!");
-       }*/
+       }
 
-       //console.log(resolutionWidth,resolutionHeight,x,y,w,h,widthStep);
-       /*if(resolutionChanged(resolutionWidth,resolutionHeight)){
+       console.log(resolutionWidth,resolutionHeight,x,y,w,h,widthStep);
+       if(resolutionChanged(resolutionWidth,resolutionHeight)){
           changeResolution(resolutionWidth,resolutionHeight);
           requestCachedImage();
-       } else {*/
-          //display(convertToRGBA(evt.data,7*sizeOfUshort,w,h),x,y,w,h);
-          display(evt.data,0,0,1368,768);
-      // }
+       } else {
+          display(convertToRGBA(evt.data,7*sizeOfUshort,w,h),x,y,w,h);
+          //display(evt.data,0,0,1368,768);
+       }
        console.log("recv from server:" + evt.data);
     };
     connection.onclose = function() {

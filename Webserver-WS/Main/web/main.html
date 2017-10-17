@@ -25,9 +25,9 @@
       } else {
          console.info("exit full screen");
          var iframeObj = document.getElementById("viewportal");
-         iframeObj.src = 'about:blank';
-         iframeObj.style.display= 'none';
-         setPanelVisible(true);
+        // iframeObj.src = 'about:blank';
+        // iframeObj.style.display= 'none';
+         //setPanelVisible(true);
       }
    };
    var setPortrait = function(){
@@ -93,7 +93,7 @@
       }
    };
    var enterDisplay = function(){
-      enterFullscreen(document.getElementById("viewportal"));
+      //enterFullscreen(document.getElementById("viewportal"));
       setPanelVisible(false);
       proxy_start();
    };

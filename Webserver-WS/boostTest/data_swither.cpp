@@ -5,6 +5,9 @@
 
 AudioBuffer g_audioBuffer;
 VideoBuffer g_videoBuffer;
+unsigned char *frame;
+frameInfo finfo;
+SOCKET sockEventConn;
 
 extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE = 320*240*4;
 extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE = 500; // 8K HZ, double channel
@@ -58,6 +61,57 @@ SOCKET CreateAndBind(int port)
 	return sockSrv;
 }
 
+void compress(frameInfo info, unsigned char *buf) {
+	int srcindex = 0, dstindex = 0;
+	char *tmp = new char[HEAD_SIZE+info.w*info.h * 4];
+	memcpy(tmp, buf, HEAD_SIZE + info.w*info.h * 4);
+	buf[HEAD_SIZE - 1] = (info.resolutionWidth * 3)>>8;
+	buf[HEAD_SIZE - 2] = info.resolutionWidth * 3;
+	for (int i = 0; i < info.h; ++i) {
+		for (int j = 0; j < info.w; ++j) {
+			dstindex = HEAD_SIZE + (i * info.w + j) * 3;
+			srcindex = HEAD_SIZE + (i*info.w + j) * 4;
+			buf[dstindex] = tmp[srcindex];
+			buf[dstindex + 1] = tmp[srcindex + 1];
+			buf[dstindex + 2] = tmp[srcindex + 2];
+		}
+	}
+}
+void updateFrame(frameInfo info, unsigned char *buf) {
+	if (finfo.resolutionHeight == 0) {//ave first frame
+		if ((info.resolutionHeight != info.h) ||
+			(info.resolutionWidth != info.w)) {
+			std::cout << " resolution change ,but recv frame data is not correct" << std::endl;
+		}
+		else {
+			finfo = info;
+			memcpy(frame, buf, HEAD_SIZE + info.resolutionHeight*info.resolutionWidth * 3);
+		}
+	}
+	else if ((finfo.resolutionHeight != info.resolutionHeight) ||
+		(finfo.resolutionWidth) != info.resolutionWidth) {
+		if ((info.resolutionHeight != info.w) ||
+			(info.resolutionWidth != info.h)) {
+			std::cout << " resolution change ,but recv frame data is not correct" << std:: endl;
+		}
+		else {// save the new frame
+			finfo = info;
+			memcpy(frame, buf, HEAD_SIZE + info.resolutionHeight*info.resolutionWidth * 3);
+		}
+	}
+	else {//update frame
+		int srcindex = 0, dstindex = 0;
+		for (int i = 0; i < info.h; ++i) {
+			for (int j = 0; j < info.w; ++j) {
+				dstindex = HEAD_SIZE + ((info.y + i)*finfo.w + info.x + j) * 3;
+				srcindex = HEAD_SIZE + (i*info.w + j) * 3;
+				frame[dstindex] = buf[srcindex];
+				frame[dstindex + 1] = buf[srcindex + 1];
+				frame[dstindex + 2] = buf[srcindex + 2];
+			}
+		}
+	}
+}
 
 int RTAVConnectionVideoThread(void)
 {
@@ -148,7 +202,10 @@ int RTAVConnectionAudioThread(void)
 	return 0;
 }
 
-
+//send message to mks client
+int sendtoMKS(std::string message) {
+	return send(sockEventConn, message.c_str(), message.length(),0);
+}
 
 
 /*

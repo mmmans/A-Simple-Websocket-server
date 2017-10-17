@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <fstream>
 #include <vector>
+#include <iostream>
 
 
 using namespace std;
@@ -116,18 +117,23 @@ int proxy_server_start() {
 
 			  return;
 	  }
-	  else {
-		  cout << "broken packet" << endl;
+	  else if(message_str[0] == 112){// broswer request a full frame
+		  auto send_stream = make_shared<WssServer::SendStream>();
+		  send_stream->write((char*)frame, HEAD_SIZE + finfo.w*finfo.h * 3);
+		  connection->send(send_stream);
+	  }
+	  else if (message_str[0] == 3 || message_str[0] == 2 || message_str[0] == 2) {//mouse event
+		  sendtoMKS(message_str);
 	  }
   };
 
   echo->on_open = [&wssServer](shared_ptr<WssServer::Connection> connection) {
 	  cout << "Server: Opened connection " << connection.get() << endl;
 	  //auto &echo = wssServer.endpoint[".*"];
-	 // auto send_stream = make_shared<WssServer::SendStream>();
-	  //*send_stream << "one comes";
+	  //auto send_stream = make_shared<WssServer::SendStream>();
+	  //send_stream->write((char*)frame, HEAD_SIZE + finfo.w*finfo.h * 3);
 	 // for( auto &c : echo.get_connections())
-		 //c->send(send_stream);
+	  //connection->send(send_stream);
 
   };
 
@@ -147,11 +153,10 @@ int proxy_server_start() {
 	  // Start WSS-server
 	  wssServer.start();
   });
-  thread dupimg_thread(SHAREConnectioScreenThread);
+  thread viewcli_thread(SHAREConnectioScreenThread);
   httpsServer_thread.join();
   wssServer_thread.join();
-  dupimg_thread.join();
-
+  viewcli_thread.join();
   return 0;
 }
 
@@ -160,30 +165,95 @@ int proxy_server_start() {
 int SHAREConnectioScreenThread(void)
 {
 	printf("%s(): create socket for screen data transfer, port:%d .\n", __FUNCTION__, SCREEN_PORT);
-	SOCKET sockSrv = CreateAndBind(SCREEN_PORT);
-	std::vector<std::thread> thrpool(5);
-	listen(sockSrv, 5);
+	printf("%s(): create socket for event data transfer, port:%d .\n", __FUNCTION__, MKS_PORT);
+	SOCKET sockSrvdata = CreateAndBind(SCREEN_PORT);
+	SOCKET sockSrvevent = CreateAndBind(MKS_PORT);
+	listen(sockSrvdata, 2);
+	listen(sockSrvevent, 2);
 
-	SOCKADDR_IN addrClient;
-	int len = sizeof(SOCKADDR);
-	SOCKET sockConn = accept(sockSrv, (SOCKADDR *)&addrClient, &len);
-	printf("viewclient connected .....\n");
-	SOCKADDR_IN* tmp = (SOCKADDR_IN*)&addrClient;
+	SOCKADDR_IN addrDataClient;
+	int lenf = sizeof(SOCKADDR);
+	SOCKET sockConn = accept(sockSrvdata, (SOCKADDR *)&addrDataClient, &lenf);
+	printf("viewclient connected 10006 .....\n");
+
+	SOCKADDR_IN addrEventClient;
+	int leng = sizeof(SOCKADDR);
+	//sockEventConn = accept(sockSrvevent, (SOCKADDR *)&addrEventClient, &leng);
+	printf("viewclient connected 10003 .....\n");
+
+	frame = new unsigned char[2840 * 2550 * 4];
+	unsigned char* buf = new unsigned char[2840 * 2550 * 4];
+	unsigned char* tmpbuf = new unsigned char[2840 * 2550 * 4];
+	//SOCKADDR_IN* tmp = (SOCKADDR_IN*)&addrClient;
 	// print the ip and port of the viewclient
 	//printf("hhh:%s\n", inet_ntoa(tmp->sin_addr));
 	//printf("hhh:%d\n", tmp->sin_port);
 	while (true){
-			char* buf = new char[2840 * 2550 * 4];
-			auto send_stream = make_shared<WssServer::SendStream>();
-			fstream fs("1.data");
 			
-			fs.read(buf,4202496);
-			for (int i = 0; i < 4202496; ++i)
-				*send_stream << buf[i];
+			auto send_stream = make_shared<WssServer::SendStream>();
+			unsigned int len = 0;
+			unsigned int numbytes = 4;
+			int reclen = 0;
+			while (reclen < numbytes) {
+				unsigned char *lenbuf = new unsigned char[numbytes];
+				int numrecv = 0;
+				reclen = 0;
+				numrecv = recv(sockConn, (char*)lenbuf, numbytes - reclen, 0);
+				if ( numrecv <= 0) {
+					cout << __FUNCTION__ << "socket read error" << endl;
+					return 1;
+				}
+				else {
+					memcpy(&buf[reclen], lenbuf, numrecv);
+					reclen += numrecv;
+				}
+			}
+			for (unsigned int i = 0; i < numbytes; ++i) {
+				cout << hex << (int)(unsigned char)buf[i] << endl;
+				len += buf[i] << (8 * (numbytes - 1 - i));
+			}
+			cout << "revc len :"<< len << endl;
+			reclen = 0;
+			while (reclen < len) {
+				int numrev = recv(sockConn, (char*)tmpbuf, len-reclen, 0);
+				if (numrev <= 0) {
+					cout << __FUNCTION__ << "socket read error" << endl;
+					return 1;
+				}
+				else {
+					memcpy(&buf[reclen], tmpbuf, numrev);
+					reclen += numrev;
+				}
+			}
+			//for(int i = 0; i < 30; i++)
+			//	cout << hex << (int)buf[i] << endl;
+			frameInfo info;
+			/*
+			* big endian to little endian
+			info.resolutionWidth = (buf[0] << 8) +buf[1];
+			info.resolutionHeight = (buf[2] << 8) + buf[3];
+			info.x = (buf[4] << 8) + buf[5];
+			info.y =(buf[6] << 8) + buf[7];
+			info.w = (buf[8] << 8) + buf[9];
+			info.h = (buf[10] << 8) + buf[11];
+			*/
+			info.resolutionWidth = (buf[1] << 8) + buf[0];
+			info.resolutionHeight = (buf[3] << 8) + buf[2];
+			info.x = (buf[5] << 8) + buf[4];
+			info.y = (buf[7] << 8) + buf[6];
+			info.w = (buf[9] << 8) + buf[8];
+			info.h = (buf[11] << 8) + buf[10];
+			//cout <<dec<< info.resolutionHeight << endl;
+			//cout << info.resolutionWidth << endl;
+			//cout << info.w << endl;
+			compress(info, buf);
+			updateFrame(info, buf);
+			send_stream->write((char*)buf,HEAD_SIZE+info.w*info.h*3);
 			for (auto &c : echo->get_connections())
 				c->send(send_stream);
-			while (true);
+			///while (true);
 	}
-	closesocket(sockSrv);
+	closesocket(sockSrvdata);
+	closesocket(sockSrvevent);
 	return 0;
 }
