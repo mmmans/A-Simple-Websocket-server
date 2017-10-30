@@ -22,4 +22,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="..\Debug\boostTest.lib" />
+  </ItemGroup>
 </Project>

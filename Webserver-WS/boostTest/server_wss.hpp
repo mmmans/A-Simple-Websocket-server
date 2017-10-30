@@ -5,7 +5,6 @@
 #include <openssl/ssl.h>
 
 #include <asio/ssl.hpp>
-#include <asio/ssl/impl/src.hpp>
 
 
 namespace SimpleWeb {

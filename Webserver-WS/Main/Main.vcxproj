@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\boostTest;..\DataSwitcher;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\menx\workspace\projects\ws\Webserver-WS\Debug;C:\openssl-1.0.1\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\boostTest;..\DataSwitcher;C:\openssl-1.0.1\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openssl-1.0.1\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -90,6 +90,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINSOCK_DEPRECATED_NO_WARNINGS;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,9 +153,7 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\boostTest\boostTest.vcxproj">
-      <Project>{0e6b9ff2-00f3-4d59-8f1f-b563cb65d691}</Project>
-    </ProjectReference>
+    <Library Include="..\Debug\boostTest.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

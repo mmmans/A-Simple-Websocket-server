@@ -10,6 +10,8 @@
 #include <cstring>
 #include <string>
 #include <vector>
+#include "server_wss.hpp"
+#include "server_https.hpp"
 #pragma comment(lib,"Ws2_32.lib")
 #define RTAV_VIDEO_PORT 10001
 #define RTAV_AUDIO_PORT 10002
@@ -62,7 +64,9 @@ extern VideoBuffer g_videoBuffer;
 extern unsigned char *frame;
 extern frameInfo finfo;
 extern SOCKET sockEventConn;
-
+typedef SimpleWeb::SocketServer<SimpleWeb::WSS> WssServer;
+typedef SimpleWeb::Server<SimpleWeb::HTTPS> HttpsServer;
+extern WssServer::Endpoint *echo;
 extern const unsigned long DEFAULT_VIDEO_FRAME_SIZE;
 extern const unsigned long DEFAULT_AUDIO_FRAEM_SIZE; // 8K HZ, double channel
 
@@ -78,5 +82,5 @@ extern int sendtoMKS(std::string message);
 //extern int SHAREConnectioeventThread(void);
 extern int data_swither_start();
 
-extern int proxy_server_start();
+
 #endif // !_PROXY_SERVER_H

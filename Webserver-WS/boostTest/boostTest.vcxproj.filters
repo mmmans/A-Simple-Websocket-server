@@ -42,12 +42,18 @@
     <ClInclude Include="proxy_server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Webserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="proxy_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="data_swither.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

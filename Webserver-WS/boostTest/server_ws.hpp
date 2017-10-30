@@ -10,7 +10,6 @@
 #include <thread>
 #include <map>
 #include <unordered_set>
-#include <asio/impl/src.hpp>
 #include <asio.hpp>
 namespace SimpleWeb {
   using error_code = std::error_code;
