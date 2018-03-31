@@ -1,2 +1,2 @@
-*.html linguist-language=Python
-*.css linguist-language=Python
+*.html linguist-language=C++
+*.css linguist-language=C++
