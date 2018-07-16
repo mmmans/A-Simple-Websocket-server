@@ -1,11 +1,8 @@
 # A-Simple-Websocket-server
-C++ Webserver .Supporting http,https,websocket,websocket Secure(WSS).A basic implementation features need to be added for different needs
-
-IDE : Visual Studio 2015
-
-dependency : openssl
-
-To run the demo :
+C++ WebserverSupporting **http,https,websocket,websocket Secure(WSS)**.
+## Dependency
+*openssl
+## Steps to run
 1. clone the project
 2. install openssl 
 3. configure the openssl path in the VS project
