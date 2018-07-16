@@ -5,7 +5,7 @@ This is a C++ Webserver impletation Supporting protocols
 * websocket
 * websocket Secure(WSS).
 ## Dependency
-*openssl
+* openssl
 ## Steps to run
 1. clone the project
 2. install openssl (https and wss needed)
