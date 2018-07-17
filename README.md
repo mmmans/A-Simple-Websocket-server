@@ -1,5 +1,5 @@
 # A-Simple-Websocket-server
-This is a C++ Webserver impletation Supporting protocols 
+This is a C++ Webserver implementation Supporting protocols 
 * http
 * https
 * websocket
